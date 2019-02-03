@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Josh&#39;s Blog">
 <meta property="og:description" content="The following is an in-depth, step by step method of understanding pointers, along with their core concepts. IntroFor many beginners in programming and software engineering, pointers can prove a diffi">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-02T08:29:39.922Z">
+<meta property="og:updated_time" content="2019-02-03T21:12:37.177Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Understanding Pointers">
 <meta name="twitter:description" content="The following is an in-depth, step by step method of understanding pointers, along with their core concepts. IntroFor many beginners in programming and software engineering, pointers can prove a diffi">
@@ -99,7 +99,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fundamentals"><span class="toc-number">2.</span> <span class="toc-text">Fundamentals</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory"><span class="toc-number">2.1.</span> <span class="toc-text">Memory</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -149,7 +149,20 @@
 
   <div class="content" itemprop="articleBody">
     <p>The following is an in-depth, step by step method of understanding pointers, along with their core concepts.</p>
-<h2 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h2><p>For many beginners in programming and software engineering, pointers can prove a difficult idea to grasp.</p>
+<h2 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h2><p>For many beginners in programming and software engineering, pointers can prove a difficult idea to grasp. Memory, addresses, dereferencing, these terms on their own have tricky definitions. In part, because they are usually not taught with practical examples. Here, we will explore the fine details of pointers, memory, and their true powers in programming. </p>
+<p>The main programming language used here will be C. It’s the most effective for learning pointers as it let’s you focus on raw pointers, not hiding anything behind the scenes. Additionally, C allows more in-depth exploration of the different memory types relevant for pointers. <code>new</code> and <code>delete</code> hide some details of the way pointers can access memory in <code>C++</code>.</p>
+<h2 id="Fundamentals"><a href="#Fundamentals" class="headerlink" title="Fundamentals"></a>Fundamentals</h2><p>In C, all variables have both a <em>type</em> and a <em>value</em>. Every <em>type</em> has some specific size. Every type’s size in C, C++, and similar languages is defined in terms of <em>bytes</em>. A byte is for nearly all cases, an unsigned 8-bit integer. Below are some example C types:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">long</span> x = <span class="number">7500</span>;</span><br><span class="line"><span class="keyword">float</span> b = <span class="number">3.4</span>;</span><br><span class="line"><span class="keyword">char</span> c = <span class="string">'e'</span>;</span><br></pre></td></tr></table></figure>
+<p>These types represent different varieties of data, and also have different sizes. In C and C++, you can determine the size of a value by using the <code>sizeof</code> operator. The size of any type <em>never</em> changes. Let’s look at sizes of common C types by printing their respective <code>sizeof</code> calls.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">"sizeof int is %lu\n"</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"sizeof int is %lu\n"</span>, <span class="keyword">sizeof</span>(a));</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"sizeof long is %lu\n"</span>, <span class="keyword">sizeof</span>(x));</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"sizeof char is %lu\n"</span>, <span class="keyword">sizeof</span>(c));</span><br></pre></td></tr></table></figure>
+<p>Which will print:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sizeof int is 4</span><br><span class="line">sizeof int is 4</span><br><span class="line">sizeof long is 8</span><br><span class="line">sizeof char is 1</span><br></pre></td></tr></table></figure>
+<p><em>Note</em>: When a variable is passed to <code>sizeof</code>, it’s size is inferred from it’s type. Calling <code>sizeof</code> on a type or a variable is identical in behavior.</p>
+<p>Next, let’s talk about memory.</p>
+<h3 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h3><p>Previously, we discussed <em>types</em>, and their sizes. All values, data, and variables, whatever you want to name them, are stored in <em>memory</em>. For the purposes of this article, let’s think of memory as a finite collection of bytes. In C, there are 3 main types of memory: <em>static</em>, <em>stack</em>, and <em>heap</em> memory.</p>
+<blockquote>
+<p>stack: Memory used within a function’s call frame. It only exist while the stack frame of a function has not yet hit a <em>return</em> statement.<br>heap: Memory allocated from functions like <em>malloc</em>, <em>calloc</em>, or <em>realloc</em>. This memory exists until it is deallocated with <em>free</em>.<br>static: Memory used by declaring a variable <em>static</em>. This type of memory lives for the entire time the program is running, and usually is located in the data segment of the executable from the C program being run.</p>
+</blockquote>
 
   </div>
 </article>
@@ -175,7 +188,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fundamentals"><span class="toc-number">2.</span> <span class="toc-text">Fundamentals</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory"><span class="toc-number">2.1.</span> <span class="toc-text">Memory</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
