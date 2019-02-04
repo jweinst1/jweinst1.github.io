@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Josh&#39;s Blog">
 <meta property="og:description" content="The following is an in-depth, step by step method of understanding pointers, along with their core concepts. IntroFor many beginners in programming and software engineering, pointers can prove a diffi">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-03T21:12:37.177Z">
+<meta property="og:updated_time" content="2019-02-04T23:27:32.392Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Understanding Pointers">
 <meta name="twitter:description" content="The following is an in-depth, step by step method of understanding pointers, along with their core concepts. IntroFor many beginners in programming and software engineering, pointers can prove a diffi">
@@ -99,7 +99,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fundamentals"><span class="toc-number">2.</span> <span class="toc-text">Fundamentals</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory"><span class="toc-number">2.1.</span> <span class="toc-text">Memory</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fundamentals"><span class="toc-number">2.</span> <span class="toc-text">Fundamentals</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory"><span class="toc-number">2.1.</span> <span class="toc-text">Memory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Addresses"><span class="toc-number">2.2.</span> <span class="toc-text">Addresses</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -163,6 +163,11 @@
 <blockquote>
 <p>stack: Memory used within a function’s call frame. It only exist while the stack frame of a function has not yet hit a <em>return</em> statement.<br>heap: Memory allocated from functions like <em>malloc</em>, <em>calloc</em>, or <em>realloc</em>. This memory exists until it is deallocated with <em>free</em>.<br>static: Memory used by declaring a variable <em>static</em>. This type of memory lives for the entire time the program is running, and usually is located in the data segment of the executable from the C program being run.</p>
 </blockquote>
+<p>Unlike stack memory, heap memory is never freed automatically during the runtime of the program. C++ classes have destructors or smart pointers which can do this, but C does not. Abandoning the last pointer to a chunk of heap memory without freeing it results in a <em>memory leak</em>, a situation where allocated memory on the heap can no longer be reached in order to be freed.</p>
+<p>Below are examples of pointers to different types of memory:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> foo = <span class="number">6</span>;</span><br><span class="line"><span class="keyword">int</span> doo = <span class="number">3</span>;</span><br><span class="line"><span class="keyword">int</span>* static_ptr = &amp;foo;</span><br><span class="line"><span class="keyword">int</span>* heap_ptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line"><span class="keyword">int</span>* stack_ptr = &amp;doo;</span><br></pre></td></tr></table></figure>
+<p>Here, <code>foo</code> is declared as <code>static</code>, rendering it static memory. Although we are not inside a function body, assume that <code>doo</code> is a stack allocated variable and not a <em>global</em> variable. The pointer <code>static_ptr</code> is initialized via using the addressof operator, <code>&amp;</code>. Yet, <code>heap_ptr</code> is not. That’s because the function <code>malloc</code> already returns a pointer, not a value. The addressof operator is used to determine the address of a value. Specifically, these are values that are not lvalues. For now, let’s look at addresses:</p>
+<h3 id="Addresses"><a href="#Addresses" class="headerlink" title="Addresses"></a>Addresses</h3><p>All bytes in memory, be it stack memory, static memory, or heap memory carry some <em>address</em>.</p>
 
   </div>
 </article>
@@ -188,7 +193,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fundamentals"><span class="toc-number">2.</span> <span class="toc-text">Fundamentals</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory"><span class="toc-number">2.1.</span> <span class="toc-text">Memory</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-number">1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fundamentals"><span class="toc-number">2.</span> <span class="toc-text">Fundamentals</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory"><span class="toc-number">2.1.</span> <span class="toc-text">Memory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Addresses"><span class="toc-number">2.2.</span> <span class="toc-text">Addresses</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
